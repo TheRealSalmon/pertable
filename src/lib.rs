@@ -33,6 +33,12 @@ impl Display for Error {
 
 impl std::error::Error for Error {}
 
+#[derive(Debug)]
+pub enum Valence {
+    SimpleOctet(u8),
+    ExpandedOctet(Vec<u8>),
+}
+
 #[rustfmt::skip]
 #[derive(Debug, PartialEq, Eq)]
 pub enum Element {
@@ -774,6 +780,29 @@ impl Element {
             _ => unimplemented!(),
         }
     }
+
+    fn n_valence_electrons(&self, formal_charge: i8) -> Result<u8, Error> {
+        let mut n_valence_electrons = match self {
+            Element::B => 3,
+            Element::C => 4,
+            Element::N => 5,
+            Element::O => 6,
+            Element::F => 7,
+            Element::P => 5,
+            Element::S => 6,
+            Element::Cl => 7,
+            Element::Br => 7,
+            Element::I => 7,
+            _ => unimplemented!(),
+        };
+
+        n_valence_electrons -= formal_charge;
+        if !(0..=8).contains(&n_valence_electrons) {
+            return Err(Error::InvalidFormalCharge(self.to_string(), formal_charge));
+        }
+
+        Ok(n_valence_electrons as u8)
+    }
 }
 
 #[cfg(test)]
@@ -828,5 +857,16 @@ mod tests {
     fn test_atomic_weight() {
         assert_eq!(Element::H.atomic_weight(None).unwrap(), 1.007975);
         assert_eq!(Element::C.atomic_weight(Some(13)).unwrap(), 13.003355);
+    }
+
+    #[test]
+    fn test_valence_electrons() {
+        assert_eq!(Element::C.n_valence_electrons(0).unwrap(), 4);
+        assert_eq!(Element::C.n_valence_electrons(-1).unwrap(), 5);
+        assert_eq!(Element::O.n_valence_electrons(-2).unwrap(), 8);
+        assert_eq!(
+            Element::F.n_valence_electrons(-2),
+            Err(Error::InvalidFormalCharge("F".to_owned(), -2))
+        )
     }
 }
