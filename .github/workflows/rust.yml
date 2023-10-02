@@ -1,0 +1,47 @@
+on: [push, pull_request]
+
+name: rust
+
+jobs:
+  tarpaulin:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install cargo-tarpaulin
+      run: cargo install cargo-tarpaulin
+    - name: tarpaulin
+      run: cargo tarpaulin --ignore-tests
+
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install clippy
+      run: rustup component add clippy
+    - name: clippy
+      run: cargo clippy -- -D warnings
+
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install rustfmt
+      run: rustup component add rustfmt
+    - name: fmt
+      run: cargo fmt --check
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: install cargo-audit
+      run: cargo install cargo-audit
+    - name: audit
+      run: cargo audit
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: test
+      run: cargo test
