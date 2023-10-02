@@ -6,6 +6,7 @@ pub enum Error {
     InvalidAtomicNumber(u8),
     InvalidAtomicSymbol(String),
     InvalidIsotope(String, u16),
+    InvalidFormalCharge(String, i8),
 }
 
 impl Display for Error {
@@ -19,6 +20,12 @@ impl Display for Error {
             }
             Error::InvalidIsotope(atomic_symbol, isotope) => {
                 write!(f, "invalid isotope {isotope} for {atomic_symbol}")
+            }
+            Error::InvalidFormalCharge(atomic_symbol, formal_charge) => {
+                write!(
+                    f,
+                    "invalid formal charge {formal_charge} for {atomic_symbol}"
+                )
             }
         }
     }
@@ -780,6 +787,12 @@ mod tests {
 
         let error = Error::InvalidAtomicSymbol("A".to_owned());
         assert_eq!(format!("{error}"), "invalid atomic symbol A");
+
+        let error = Error::InvalidIsotope("C".to_owned(), 10);
+        assert_eq!(format!("{error}"), "invalid isotope 10 for C");
+
+        let error = Error::InvalidFormalCharge("O".to_owned(), -3);
+        assert_eq!(format!("{error}"), "invalid formal charge -3 for O");
     }
 
     #[test]
