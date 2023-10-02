@@ -695,6 +695,12 @@ mod tests {
     }
 
     #[test]
+    fn test_to_u8() {
+        assert_eq!(u8::from(Element::H), 1);
+        assert_eq!(u8::from(Element::C), 6);
+    }
+
+    #[test]
     fn test_from_str() {
         assert_eq!(Element::H, "H".parse().unwrap());
         assert_eq!(Element::C, "c".parse().unwrap());
@@ -711,8 +717,5 @@ mod tests {
     }
 
     #[test]
-    fn test_to_u8() {
-        assert_eq!(u8::from(Element::H), 1);
-        assert_eq!(u8::from(Element::C), 6);
     }
 }
