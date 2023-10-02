@@ -5,6 +5,7 @@ use std::str::FromStr;
 pub enum Error {
     InvalidAtomicNumber(u8),
     InvalidAtomicSymbol(String),
+    InvalidIsotope(String, u16),
 }
 
 impl Display for Error {
@@ -15,6 +16,9 @@ impl Display for Error {
             }
             Error::InvalidAtomicSymbol(atomic_symbol) => {
                 write!(f, "invalid atomic symbol {atomic_symbol}")
+            }
+            Error::InvalidIsotope(atomic_symbol, isotope) => {
+                write!(f, "invalid isotope {isotope} for {atomic_symbol}")
             }
         }
     }
@@ -674,6 +678,97 @@ impl Display for Element {
     }
 }
 
+impl Element {
+    pub fn atomic_weight(&self, isotope: Option<u16>) -> Result<f64, Error> {
+        match self {
+            Element::Any => Ok(0.0),
+            Element::H => match isotope {
+                None => Ok(1.007_975),
+                Some(isotope) => match isotope {
+                    1 => Ok(1.007_825),
+                    2 => Ok(2.014_102),
+                    3 => Ok(3.016_049),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::He => match isotope {
+                None => Ok(4.002_602),
+                Some(isotope) => match isotope {
+                    3 => Ok(3.016_029),
+                    4 => Ok(4.002_603),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::Li => match isotope {
+                None => Ok(6.967_5),
+                Some(isotope) => match isotope {
+                    6 => Ok(6.015_123),
+                    7 => Ok(7.016_003),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::Be => match isotope {
+                None => Ok(9.012_183),
+                Some(isotope) => match isotope {
+                    9 => Ok(9.012_183),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::B => match isotope {
+                None => Ok(10.813_5),
+                Some(isotope) => match isotope {
+                    10 => Ok(10.012_937),
+                    11 => Ok(11.009_305),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::C => match isotope {
+                None => Ok(12.010_6),
+                Some(isotope) => match isotope {
+                    12 => Ok(12.000_000),
+                    13 => Ok(13.003_355),
+                    14 => Ok(14.003_242),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::N => match isotope {
+                None => Ok(14.006_855),
+                Some(isotope) => match isotope {
+                    14 => Ok(14.003_074),
+                    15 => Ok(15.000_109),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::O => match isotope {
+                None => Ok(15.9994),
+                Some(isotope) => match isotope {
+                    16 => Ok(15.994_915),
+                    17 => Ok(16.999_132),
+                    18 => Ok(17.999_160),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::F => match isotope {
+                None => Ok(18.998_403),
+                Some(isotope) => match isotope {
+                    19 => Ok(18.998_403),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            Element::Ne => match isotope {
+                None => Ok(20.179_7),
+                Some(isotope) => match isotope {
+                    20 => Ok(19.997_440),
+                    21 => Ok(20.993_847),
+                    22 => Ok(21.991_385),
+                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                },
+            },
+            _ => unimplemented!(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -717,5 +812,8 @@ mod tests {
     }
 
     #[test]
+    fn test_atomic_weight() {
+        assert_eq!(Element::H.atomic_weight(None).unwrap(), 1.007975);
+        assert_eq!(Element::C.atomic_weight(Some(13)).unwrap(), 13.003355);
     }
 }
