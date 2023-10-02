@@ -33,7 +33,7 @@ impl Display for Error {
 
 impl std::error::Error for Error {}
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Valence {
     SimpleOctet(u8),
     ExpandedOctet(Vec<u8>),
@@ -781,7 +781,7 @@ impl Element {
         }
     }
 
-    fn n_valence_electrons(&self, formal_charge: i8) -> Result<u8, Error> {
+    pub fn n_valence_electrons(&self, formal_charge: i8) -> Result<u8, Error> {
         let mut n_valence_electrons = match self {
             Element::B => 3,
             Element::C => 4,
@@ -802,6 +802,38 @@ impl Element {
         }
 
         Ok(n_valence_electrons as u8)
+    }
+
+    pub fn valence(&self, formal_charge: i8) -> Result<Valence, Error> {
+        let n_valence_electrons = self.n_valence_electrons(formal_charge)?;
+
+        if u8::from(self) < 11 {
+            match n_valence_electrons {
+                0 => Ok(Valence::SimpleOctet(0)),
+                1 => Ok(Valence::SimpleOctet(1)),
+                2 => Ok(Valence::SimpleOctet(2)),
+                3 => Ok(Valence::SimpleOctet(3)),
+                4 => Ok(Valence::SimpleOctet(4)),
+                5 => Ok(Valence::SimpleOctet(3)),
+                6 => Ok(Valence::SimpleOctet(2)),
+                7 => Ok(Valence::SimpleOctet(1)),
+                8 => Ok(Valence::SimpleOctet(0)),
+                _ => unreachable!(),
+            }
+        } else {
+            match n_valence_electrons {
+                0 => Ok(Valence::ExpandedOctet(vec![0])),
+                1 => Ok(Valence::ExpandedOctet(vec![1])),
+                2 => Ok(Valence::ExpandedOctet(vec![2])),
+                3 => Ok(Valence::ExpandedOctet(vec![3])),
+                4 => Ok(Valence::ExpandedOctet(vec![4])),
+                5 => Ok(Valence::ExpandedOctet(vec![3, 5])),
+                6 => Ok(Valence::ExpandedOctet(vec![2, 4, 6])),
+                7 => Ok(Valence::ExpandedOctet(vec![1, 3, 5, 7])),
+                8 => Ok(Valence::ExpandedOctet(vec![0, 2, 4, 6])),
+                _ => unreachable!(),
+            }
+        }
     }
 }
 
@@ -868,5 +900,14 @@ mod tests {
             Element::F.n_valence_electrons(-2),
             Err(Error::InvalidFormalCharge("F".to_owned(), -2))
         )
+    }
+
+    #[test]
+    fn test_valence() {
+        assert_eq!(Element::C.valence(0).unwrap(), Valence::SimpleOctet(4));
+        assert_eq!(
+            Element::S.valence(0).unwrap(),
+            Valence::ExpandedOctet(vec![2, 4, 6])
+        );
     }
 }
