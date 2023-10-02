@@ -2,7 +2,7 @@
 name = "pertable"
 version = "0.1.0"
 edition = "2021"
-authors = ["Sam Mun" <ozonefreak2@gmail.com>]
+authors = ["Sam Mun <ozonefreak2@gmail.com>"]
 description = "Periodic table in rust"
 repository = "https://github.com/TheRealSalmon/pertable"
 license = "MIT"
