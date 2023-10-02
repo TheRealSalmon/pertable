@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Sam Mun <ozonefreak2@gmail.com>"]
 description = "Periodic table in rust"
+documentation = "https://docs.rs/pertable"
 repository = "https://github.com/TheRealSalmon/pertable"
 license = "MIT"
 keywords = ["chemistry"]
