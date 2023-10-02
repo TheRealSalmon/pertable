@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Error {
-    InvalidAtomicNumber(usize),
+    InvalidAtomicNumber(u8),
     InvalidAtomicSymbol(String),
 }
 
@@ -38,10 +38,10 @@ pub enum Element {
             Ac, Th, Pa, U , Np, Pu, Am, Cm, Bk, Cf, Es, Fm, Md, No, Lr,
 }
 
-impl TryFrom<usize> for Element {
+impl TryFrom<u8> for Element {
     type Error = Error;
 
-    fn try_from(value: usize) -> Result<Self, Self::Error> {
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
         match value {
             0 => Ok(Element::Any),
             1 => Ok(Element::H),
@@ -428,8 +428,8 @@ mod tests {
 
     #[test]
     fn test_error() {
-        let error = Error::InvalidAtomicNumber(999);
-        assert_eq!(format!("{error}"), "invalid atomic number 999".to_owned());
+        let error = Error::InvalidAtomicNumber(200);
+        assert_eq!(format!("{error}"), "invalid atomic number 200".to_owned());
 
         let error = Error::InvalidAtomicSymbol("A".to_owned());
         assert_eq!(format!("{error}"), "invalid atomic symbol A");
@@ -439,7 +439,7 @@ mod tests {
     fn test_try_from_usize() {
         assert_eq!(Element::H, Element::try_from(1).unwrap());
         assert_eq!(Element::C, Element::try_from(6).unwrap());
-        assert_eq!(Err(Error::InvalidAtomicNumber(999)), Element::try_from(999));
+        assert_eq!(Err(Error::InvalidAtomicNumber(200)), Element::try_from(200));
     }
 
     #[test]
