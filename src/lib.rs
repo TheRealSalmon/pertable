@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -6,7 +7,7 @@ pub enum Error {
     InvalidAtomicSymbol(String),
 }
 
-impl std::fmt::Display for Error {
+impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Error::InvalidAtomicNumber(atomic_number) => {
@@ -295,6 +296,132 @@ impl FromStr for Element {
     }
 }
 
+impl Display for Element {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Element::Any => write!(f, "*"),
+            Element::H => write!(f, "H"),
+            Element::He => write!(f, "He"),
+            Element::Li => write!(f, "Li"),
+            Element::Be => write!(f, "Be"),
+            Element::B => write!(f, "B"),
+            Element::C => write!(f, "C"),
+            Element::N => write!(f, "N"),
+            Element::O => write!(f, "O"),
+            Element::F => write!(f, "F"),
+            Element::Ne => write!(f, "Ne"),
+            Element::Na => write!(f, "Na"),
+            Element::Mg => write!(f, "Mg"),
+            Element::Al => write!(f, "Al"),
+            Element::Si => write!(f, "Si"),
+            Element::P => write!(f, "P"),
+            Element::S => write!(f, "S"),
+            Element::Cl => write!(f, "Cl"),
+            Element::Ar => write!(f, "Ar"),
+            Element::K => write!(f, "K"),
+            Element::Ca => write!(f, "Ca"),
+            Element::Sc => write!(f, "Sc"),
+            Element::Ti => write!(f, "Ti"),
+            Element::V => write!(f, "V"),
+            Element::Cr => write!(f, "Cr"),
+            Element::Mn => write!(f, "Mn"),
+            Element::Fe => write!(f, "Fe"),
+            Element::Co => write!(f, "Co"),
+            Element::Ni => write!(f, "Ni"),
+            Element::Cu => write!(f, "Cu"),
+            Element::Zn => write!(f, "Zn"),
+            Element::Ga => write!(f, "Ga"),
+            Element::Ge => write!(f, "Ge"),
+            Element::As => write!(f, "As"),
+            Element::Se => write!(f, "Se"),
+            Element::Br => write!(f, "Br"),
+            Element::Kr => write!(f, "Kr"),
+            Element::Rb => write!(f, "Rb"),
+            Element::Sr => write!(f, "Sr"),
+            Element::Y => write!(f, "Y"),
+            Element::Zr => write!(f, "Zr"),
+            Element::Nb => write!(f, "Nb"),
+            Element::Mo => write!(f, "Mo"),
+            Element::Tc => write!(f, "Tc"),
+            Element::Ru => write!(f, "Ru"),
+            Element::Rh => write!(f, "Rh"),
+            Element::Pd => write!(f, "Pd"),
+            Element::Ag => write!(f, "Ag"),
+            Element::Cd => write!(f, "Cd"),
+            Element::In => write!(f, "In"),
+            Element::Sn => write!(f, "Sn"),
+            Element::Sb => write!(f, "Sb"),
+            Element::Te => write!(f, "Te"),
+            Element::I => write!(f, "I"),
+            Element::Xe => write!(f, "Xe"),
+            Element::Cs => write!(f, "Cs"),
+            Element::Ba => write!(f, "Ba"),
+            Element::La => write!(f, "La"),
+            Element::Ce => write!(f, "Ce"),
+            Element::Pr => write!(f, "Pr"),
+            Element::Nd => write!(f, "Nd"),
+            Element::Pm => write!(f, "Pm"),
+            Element::Sm => write!(f, "Sm"),
+            Element::Eu => write!(f, "Eu"),
+            Element::Gd => write!(f, "Gd"),
+            Element::Tb => write!(f, "Tb"),
+            Element::Dy => write!(f, "Dy"),
+            Element::Ho => write!(f, "Ho"),
+            Element::Er => write!(f, "Er"),
+            Element::Tm => write!(f, "Tm"),
+            Element::Yb => write!(f, "Yb"),
+            Element::Lu => write!(f, "Lu"),
+            Element::Hf => write!(f, "Hf"),
+            Element::Ta => write!(f, "Ta"),
+            Element::W => write!(f, "W"),
+            Element::Re => write!(f, "Re"),
+            Element::Os => write!(f, "Os"),
+            Element::Ir => write!(f, "Ir"),
+            Element::Pt => write!(f, "Pt"),
+            Element::Au => write!(f, "Au"),
+            Element::Hg => write!(f, "Hg"),
+            Element::Tl => write!(f, "Tl"),
+            Element::Pb => write!(f, "Pb"),
+            Element::Bi => write!(f, "Bi"),
+            Element::Po => write!(f, "Po"),
+            Element::At => write!(f, "At"),
+            Element::Rn => write!(f, "Rn"),
+            Element::Fr => write!(f, "Fr"),
+            Element::Ra => write!(f, "Ra"),
+            Element::Ac => write!(f, "Ac"),
+            Element::Th => write!(f, "Th"),
+            Element::Pa => write!(f, "Pa"),
+            Element::U => write!(f, "U"),
+            Element::Np => write!(f, "Np"),
+            Element::Pu => write!(f, "Pu"),
+            Element::Am => write!(f, "Am"),
+            Element::Cm => write!(f, "Cm"),
+            Element::Bk => write!(f, "Bk"),
+            Element::Cf => write!(f, "Cf"),
+            Element::Es => write!(f, "Es"),
+            Element::Fm => write!(f, "Fm"),
+            Element::Md => write!(f, "Md"),
+            Element::No => write!(f, "No"),
+            Element::Lr => write!(f, "Lr"),
+            Element::Rf => write!(f, "Rf"),
+            Element::Db => write!(f, "Db"),
+            Element::Sg => write!(f, "Sg"),
+            Element::Bh => write!(f, "Bh"),
+            Element::Hs => write!(f, "Hs"),
+            Element::Mt => write!(f, "Mt"),
+            Element::Ds => write!(f, "Ds"),
+            Element::Rg => write!(f, "Rg"),
+            Element::Cn => write!(f, "Cn"),
+            Element::Nh => write!(f, "Nh"),
+            Element::Fl => write!(f, "Fl"),
+            Element::Mc => write!(f, "Mc"),
+            Element::Lv => write!(f, "Lv"),
+            Element::Ts => write!(f, "Ts"),
+            Element::Og => write!(f, "Og"),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -323,5 +450,11 @@ mod tests {
             Err(Error::InvalidAtomicSymbol("A".to_owned())),
             "A".parse::<Element>()
         );
+    }
+
+    #[test]
+    fn test_to_str() {
+        assert_eq!(format!("{}", Element::H), "H");
+        assert_eq!(format!("{}", Element::C), "C");
     }
 }
