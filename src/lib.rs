@@ -1,6 +1,49 @@
+//! Periodic table in Rust
+//!
+//! Provides an Element enum which has a few utility functions that are useful
+//! for general cheminformatics programming. Elements can be created either from
+//! the atomic number or the atomic symbol using the TryFrom<u8> and FromStr
+//! respectively.
+//!
+//! This library provides a few utility functions useful for cheminformatics:
+//! - `atomic_number`
+//! - `atomic_symbol`
+//! - `atomic_weight` (WIP!)
+//! - `n_valence_electrons` (for SMILES parsing/perception, not for general use)
+//! - `valence` (for SMILES parsing/perception, not for general use)
+//!
+//! This library has its own `Error` enum with the following variants:
+//! - `InvalidAtomicNumber`
+//! - `InvalidAtomicSymbol`
+//! - `InvalidIsotope`
+//! - `InvalidFormalCharge`
+//!
+//! Here's some example code:
+//! ```rust
+//! use pertable::Element;
+//!
+//! let element = Element::C;
+//! assert_eq!(element.atomic_number(), 6);
+//! assert_eq!(element.atomic_symbol(), "C".to_owned());
+//! assert_eq!(element.atomic_weight(None).unwrap(), 12.0106);
+//! assert_eq!(element.n_valence_electrons(0).unwrap(), 4);
+//! assert_eq!(element.valence(0).unwrap(), 4);
+//! ```
+
 use std::fmt::Display;
 use std::str::FromStr;
 
+/// Error enum for pertable.
+///
+/// Possible variants are:
+/// - `InvalidAtomicNumber`
+///     - Invoked when creating an element with atomic_number > 118
+/// - `InvalidAtomicSymbol`
+///     - Invoked when creating an element with an invalid atomic_symbol
+/// - `InvalidIsotope`
+///     - Invoked when querying atomic_weight of an unknown isotope
+/// - `InvalidFormalCharge`
+///     - Invoked when querying n_valence_electrons but n_valence_electrons < 0 or > 8
 #[derive(Debug, PartialEq, Eq)]
 pub enum Error {
     InvalidAtomicNumber(u8),
@@ -33,12 +76,14 @@ impl Display for Error {
 
 impl std::error::Error for Error {}
 
-#[derive(Debug, PartialEq, Eq)]
-pub enum Valence {
-    SimpleOctet(u8),
-    ExpandedOctet(Vec<u8>),
-}
-
+/// Element enum for the periodic table of elements.
+/// 
+/// "Class methods" include:
+/// - `atomic_number`
+/// - `atomic_symbol`
+/// - `atomic_weight`
+/// - `n_valence_electrons`
+/// - `valence`
 #[rustfmt::skip]
 #[derive(Debug, PartialEq, Eq)]
 pub enum Element {
@@ -692,6 +737,20 @@ impl Display for Element {
 }
 
 impl Element {
+    /// Returns the atomic number of the Element.
+    pub fn atomic_number(&self) -> u8 {
+        u8::from(self)
+    }
+
+    /// Returns the atomic symbol of the Element.
+    pub fn atomic_symbol(&self) -> String {
+        self.to_string()
+    }
+
+    /// Returns the atomic weight of the Element. If isotope is None, the
+    /// standard atomic weight is given.
+    ///
+    /// Weights are sourced from NIST.
     pub fn atomic_weight(&self, isotope: Option<u16>) -> Result<f64, Error> {
         match self {
             Element::Any => Ok(0.0),
@@ -701,7 +760,7 @@ impl Element {
                     1 => Ok(1.007_825),
                     2 => Ok(2.014_102),
                     3 => Ok(3.016_049),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::He => match isotope {
@@ -709,7 +768,7 @@ impl Element {
                 Some(isotope) => match isotope {
                     3 => Ok(3.016_029),
                     4 => Ok(4.002_603),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::Li => match isotope {
@@ -717,14 +776,14 @@ impl Element {
                 Some(isotope) => match isotope {
                     6 => Ok(6.015_123),
                     7 => Ok(7.016_003),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::Be => match isotope {
                 None => Ok(9.012_183),
                 Some(isotope) => match isotope {
                     9 => Ok(9.012_183),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::B => match isotope {
@@ -732,7 +791,7 @@ impl Element {
                 Some(isotope) => match isotope {
                     10 => Ok(10.012_937),
                     11 => Ok(11.009_305),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::C => match isotope {
@@ -741,7 +800,7 @@ impl Element {
                     12 => Ok(12.000_000),
                     13 => Ok(13.003_355),
                     14 => Ok(14.003_242),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::N => match isotope {
@@ -749,7 +808,7 @@ impl Element {
                 Some(isotope) => match isotope {
                     14 => Ok(14.003_074),
                     15 => Ok(15.000_109),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::O => match isotope {
@@ -758,14 +817,14 @@ impl Element {
                     16 => Ok(15.994_915),
                     17 => Ok(16.999_132),
                     18 => Ok(17.999_160),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::F => match isotope {
                 None => Ok(18.998_403),
                 Some(isotope) => match isotope {
                     19 => Ok(18.998_403),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             Element::Ne => match isotope {
@@ -774,13 +833,15 @@ impl Element {
                     20 => Ok(19.997_440),
                     21 => Ok(20.993_847),
                     22 => Ok(21.991_385),
-                    _ => Err(Error::InvalidIsotope(self.to_string(), isotope)),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
             _ => unimplemented!(),
         }
     }
 
+    /// Returns the number of valence electrons only for aliphatic/aromatic
+    /// elements under the OpenSMILES specification.
     pub fn n_valence_electrons(&self, formal_charge: i8) -> Result<u8, Error> {
         let mut n_valence_electrons = match self {
             Element::B => 3,
@@ -798,41 +859,31 @@ impl Element {
 
         n_valence_electrons -= formal_charge;
         if !(0..=8).contains(&n_valence_electrons) {
-            return Err(Error::InvalidFormalCharge(self.to_string(), formal_charge));
+            return Err(Error::InvalidFormalCharge(
+                self.atomic_symbol(),
+                formal_charge,
+            ));
         }
 
         Ok(n_valence_electrons as u8)
     }
 
-    pub fn valence(&self, formal_charge: i8) -> Result<Valence, Error> {
+    /// The valence only for aliphatic/aromatic elements under the OpenSMILES
+    /// specification.
+    pub fn valence(&self, formal_charge: i8) -> Result<u8, Error> {
         let n_valence_electrons = self.n_valence_electrons(formal_charge)?;
 
-        if u8::from(self) < 11 {
-            match n_valence_electrons {
-                0 => Ok(Valence::SimpleOctet(0)),
-                1 => Ok(Valence::SimpleOctet(1)),
-                2 => Ok(Valence::SimpleOctet(2)),
-                3 => Ok(Valence::SimpleOctet(3)),
-                4 => Ok(Valence::SimpleOctet(4)),
-                5 => Ok(Valence::SimpleOctet(3)),
-                6 => Ok(Valence::SimpleOctet(2)),
-                7 => Ok(Valence::SimpleOctet(1)),
-                8 => Ok(Valence::SimpleOctet(0)),
-                _ => unreachable!(),
-            }
-        } else {
-            match n_valence_electrons {
-                0 => Ok(Valence::ExpandedOctet(vec![0])),
-                1 => Ok(Valence::ExpandedOctet(vec![1])),
-                2 => Ok(Valence::ExpandedOctet(vec![2])),
-                3 => Ok(Valence::ExpandedOctet(vec![3])),
-                4 => Ok(Valence::ExpandedOctet(vec![4])),
-                5 => Ok(Valence::ExpandedOctet(vec![3, 5])),
-                6 => Ok(Valence::ExpandedOctet(vec![2, 4, 6])),
-                7 => Ok(Valence::ExpandedOctet(vec![1, 3, 5, 7])),
-                8 => Ok(Valence::ExpandedOctet(vec![0, 2, 4, 6])),
-                _ => unreachable!(),
-            }
+        match n_valence_electrons {
+            0 => Ok(0),
+            1 => Ok(1),
+            2 => Ok(2),
+            3 => Ok(3),
+            4 => Ok(4),
+            5 => Ok(3),
+            6 => Ok(2),
+            7 => Ok(1),
+            8 => Ok(0),
+            _ => unreachable!(),
         }
     }
 }
@@ -857,26 +908,32 @@ mod tests {
     }
 
     #[test]
-    fn test_try_from_usize() {
+    fn test_try_from_atomic_number() {
         assert_eq!(Element::H, Element::try_from(1).unwrap());
         assert_eq!(Element::C, Element::try_from(6).unwrap());
         assert_eq!(Err(Error::InvalidAtomicNumber(200)), Element::try_from(200));
     }
 
     #[test]
-    fn test_to_u8() {
-        assert_eq!(u8::from(Element::H), 1);
-        assert_eq!(u8::from(Element::C), 6);
+    fn test_atomic_number() {
+        assert_eq!(Element::H.atomic_number(), 1);
+        assert_eq!(Element::C.atomic_number(), 6);
     }
 
     #[test]
-    fn test_from_str() {
+    fn test_from_atomic_symbol() {
         assert_eq!(Element::H, "H".parse().unwrap());
         assert_eq!(Element::C, "c".parse().unwrap());
         assert_eq!(
             Err(Error::InvalidAtomicSymbol("A".to_owned())),
             "A".parse::<Element>()
         );
+    }
+
+    #[test]
+    fn test_atomic_symbol() {
+        assert_eq!(Element::H.atomic_symbol(), "H".to_owned());
+        assert_eq!(Element::C.atomic_symbol(), "C".to_owned());
     }
 
     #[test]
@@ -904,10 +961,7 @@ mod tests {
 
     #[test]
     fn test_valence() {
-        assert_eq!(Element::C.valence(0).unwrap(), Valence::SimpleOctet(4));
-        assert_eq!(
-            Element::S.valence(0).unwrap(),
-            Valence::ExpandedOctet(vec![2, 4, 6])
-        );
+        assert_eq!(Element::C.valence(0).unwrap(), 4);
+        assert_eq!(Element::S.valence(0).unwrap(), 2);
     }
 }
