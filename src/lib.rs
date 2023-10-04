@@ -85,7 +85,6 @@ impl std::error::Error for Error {}
 /// - `n_valence_electrons`
 /// - `valence`
 #[rustfmt::skip]
-#[derive(Debug, PartialEq, Eq)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Element {
     #[default]
@@ -835,6 +834,87 @@ impl Element {
                     20 => Ok(19.997_440),
                     21 => Ok(20.993_847),
                     22 => Ok(21.991_385),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Na => match isotope {
+                None => Ok(22.989_769),
+                Some(isotope) => match isotope {
+                    23 => Ok(22.989_769),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Mg => match isotope {
+                None => Ok(24.305_5),
+                Some(isotope) => match isotope {
+                    24 => Ok(23.985_042),
+                    25 => Ok(24.985_837),
+                    26 => Ok(25.982_593),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Al => match isotope {
+                None => Ok(26.981_539),
+                Some(isotope) => match isotope {
+                    27 => Ok(26.981_538),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Si => match isotope {
+                None => Ok(28.085),
+                Some(isotope) => match isotope {
+                    28 => Ok(27.976_927),
+                    29 => Ok(28.976_495),
+                    30 => Ok(29.973_770),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::P => match isotope {
+                None => Ok(30.973_762),
+                Some(isotope) => match isotope {
+                    31 => Ok(30.973_762),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::S => match isotope {
+                None => Ok(32.0675),
+                Some(isotope) => match isotope {
+                    32 => Ok(31.972_071),
+                    33 => Ok(32.971_459),
+                    34 => Ok(33.967_867),
+                    36 => Ok(35.967_081),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Cl => match isotope {
+                None => Ok(35.4515),
+                Some(isotope) => match isotope {
+                    35 => Ok(34.968_853),
+                    37 => Ok(36.965_093),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Ar => match isotope {
+                None => Ok(39.948_1),
+                Some(isotope) => match isotope {
+                    36 => Ok(35.967_545),
+                    38 => Ok(37.962_732),
+                    40 => Ok(39.962_383),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::Br => match isotope {
+                None => Ok(79.904),
+                Some(isotope) => match isotope {
+                    79 => Ok(78.918_338),
+                    81 => Ok(80.916_290),
+                    _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
+                },
+            },
+            Element::I => match isotope {
+                None => Ok(126.904_473),
+                Some(isotope) => match isotope {
+                    127 => Ok(126.904_472),
                     _ => Err(Error::InvalidIsotope(self.atomic_symbol(), isotope)),
                 },
             },
