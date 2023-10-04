@@ -86,7 +86,9 @@ impl std::error::Error for Error {}
 /// - `valence`
 #[rustfmt::skip]
 #[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum Element {
+    #[default]
     Any,
     H ,                                                                 He,
     Li, Be,                                         B , C , N , O , F , Ne,
