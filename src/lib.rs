@@ -926,6 +926,7 @@ impl Element {
     /// elements under the OpenSMILES specification.
     pub fn n_valence_electrons(&self, formal_charge: i8) -> Result<u8, Error> {
         let mut n_valence_electrons = match self {
+            Element::H => 1,
             Element::B => 3,
             Element::C => 4,
             Element::N => 5,
