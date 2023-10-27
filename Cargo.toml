@@ -1,6 +1,6 @@
 [package]
 name = "pertable"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["Sam Mun <ozonefreak2@gmail.com>"]
 description = "Periodic table in rust"
